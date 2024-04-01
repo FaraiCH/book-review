@@ -13,13 +13,13 @@ class CreateBooksTable extends Migration
      */
     public function up()
     {
-        Schema::create('books', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('author');
-
-            $table->timestamps();
-        });
+//        Schema::create('books', function (Blueprint $table) {
+//            $table->id();
+//            $table->string('title');
+//            $table->string('author');
+//
+//            $table->timestamps();
+//        });
     }
 
     /**
@@ -29,6 +29,6 @@ class CreateBooksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('books');
+//        Schema::dropIfExists('books');
     }
 }
