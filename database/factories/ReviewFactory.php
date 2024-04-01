@@ -23,4 +23,22 @@ class ReviewFactory extends Factory
             'updated_at' => $faker->dateTimeBetween('created_at', 'now'),
         ];
     }
+
+    public function good(){
+        return $this->state(function (array $attributes){
+            $faker = Faker::create();
+            return [
+                'rating' => $faker->numberBetween(4,5)
+            ];
+        });
+    }
+
+    public function bad(){
+        return $this->state(function (array $attributes){
+            $faker = Faker::create();
+            return [
+                'rating' => $faker->numberBetween(1,3)
+            ];
+        });
+    }
 }
