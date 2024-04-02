@@ -16,7 +16,7 @@ class ReviewFactory extends Factory
     {
         $faker = Faker::create();
         return [
-            'book_id' => 3,
+            'book_id' => 1,
             'review' => $faker->paragraph,
             'rating' => $faker->numberBetween(1, 5),
             'created_at' => $faker->dateTimeBetween('-2 years'),

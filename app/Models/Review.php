@@ -10,6 +10,6 @@ class Review extends Model
     use HasFactory;
 
     public function book(){
-        $this->belongsTo(Book::class);
+        return $this->belongsTo(Book::class);
     }
 }
