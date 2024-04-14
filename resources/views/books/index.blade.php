@@ -3,8 +3,8 @@
 @section('content')
 <h1 class="mb-10 text-2x1">Books</h1>
 
-    <form>
-
+    <form method="GET", action="{{route('books.index')}}">
+        <input type="text" name="title" />
     </form>
 <ul>
     @forelse ($books as $book)
@@ -18,7 +18,7 @@
                     </div>
                     <div>
                         <div class="book-rating">
-                            {{number_format($book->popular)}}
+                            {{number_format($book->reviews_avg_rating)}}
                         </div>
                         <div class="book-review-count">
                             out of {{$book->review_count}} {{Str::plural('review', $book->reviews_count)}}
@@ -31,7 +31,7 @@
         <li class="mb-4">
             <div class="empty-book-item">
                 <p class="empty-text">No books found</p>
-                <a href="#" class="reset-link">Reset criteria</a>
+                <a href="{{route('books.index')}}" class="reset-link">Reset criteria</a>
             </div>
         </li>
     @endforelse

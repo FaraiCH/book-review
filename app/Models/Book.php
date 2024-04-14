@@ -19,7 +19,8 @@ class Book extends Model
         return $query->where('title', 'LIKE', '%qui%');
     }
 
-    public function scopePopular(Builder $query, $from = null, $to = null){
+    public function scopePopular(Builder $query, $from = null, $to = null)
+    {
         return $query->withCount(['reviews' => function(Builder $q) use($from, $to){
             if($from && !$to){
                 $q->where('create_at', '>=', $from);
