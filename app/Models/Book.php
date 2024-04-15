@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use MongoDB\Driver\BulkWrite;
 
 
 class Book extends Model
@@ -21,19 +22,28 @@ class Book extends Model
 
     public function scopePopular(Builder $query, $from = null, $to = null)
     {
-        return $query->withCount(['reviews' => function(Builder $q) use($from, $to){
-            if($from && !$to){
-                $q->where('create_at', '>=', $from);
-            }elseif(!$from && $to){
-                $q->where('create_at', '<=', $to);
-            }elseif($from && $to){
-                $q->whereBetween('created_at',[$from, $to]);
-            }
-        }])
+        return $query->withCount(['reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)])
         ->orderBy('reviews_count', 'desc');
     }
 
     public function scopeHighestRates(Builder $query){
         return $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'desc');
+    }
+
+    public function scopeMinReviews(Builder $query, int $minReviews)
+    {
+       return $query->having('reviews_count', '>=', $minReviews);
+    }
+
+    public function dateRangeFilter(Builder $query, $from = null, $to = null)
+    {
+        if($from && !$to){
+            $query->where('create_at', '>=', $from);
+        }elseif(!$from && $to){
+            $query->where('create_at', '<=', $to);
+        }elseif($from && $to){
+            $query->whereBetween('created_at',[$from, $to]);
+        }
+
     }
 }
