@@ -36,7 +36,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -45,9 +45,9 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(string $id)
     {
-        //
+
     }
 
     /**
@@ -56,9 +56,9 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Book $book)
     {
-        //
+        return view('books.show', ['book' => $book]);
     }
 
     /**
