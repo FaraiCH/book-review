@@ -20,14 +20,25 @@ class Book extends Model
         return $query->where('title', 'LIKE', '%qui%');
     }
 
+    public function scopeWithReviewsCount(Builder $query, $from = null, $to = null)
+    {
+        return $query->withCount(['reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)]);
+    }
+
+    public function scopeWithAvgRating(Builder $query, $from = null, $to = null)
+    {
+        return $query->withAvg(['reviews' => fn(Builder $q) =>  $this->dateRangeFilter($q, $from, $to) ], 'rating');
+    }
+
     public function scopePopular(Builder $query, $from = null, $to = null)
     {
-        return $query->withCount(['reviews' => fn(Builder $q) => $this->dateRangeFilter($q, $from, $to)])
+        return $query->withReviewsCount()
         ->orderBy('reviews_count', 'desc');
     }
 
-    public function scopeHighestRates(Builder $query){
-        return $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'desc');
+    public function scopeHighestRates(Builder $query, $from = null, $to = null){
+        return $query->withAvgRating()
+        ->orderBy('reviews_avg_rating', 'desc');
     }
 
     public function scopeMinReviews(Builder $query, int $minReviews)
@@ -54,11 +65,16 @@ class Book extends Model
 
     public function scopePopularLast6Months(Builder $query)
     {
-        return $query->popular(now()->subMonth(24), now())->highestRates(now()->subMonth(6), now())->minReviews(5);
+        return $query->popular(now()->subMonth(24), now())->highestRates(now()->subMonth(24), now())->minReviews(5);
     }
 
     public function scopeHighestRatedLastMonth(Builder $query)
     {
-        return $query->highestRates(now()->subMonth(), now())->popular(now()->subMonth(), now())->minReviews(2);
+        return $query->highestRates(now()->subMonth(), now())->popular(now()->subMonth(), now())->minReviews(5);
+    }
+
+    protected static function booted(){
+        static::updated(fn(Book $book) => cache()->forget('book:'. $book->id));
+        static::deleted(fn(Book $book) => cache()->forget('book:'. $book->id));
     }
 }
